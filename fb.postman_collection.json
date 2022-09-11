@@ -1,0 +1,165 @@
+{
+	"info": {
+		"_postman_id": "4b875c04-fee0-443f-9f91-cbf94203b927",
+		"name": "fb",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11552709"
+	},
+	"item": [
+		{
+			"name": "Авторизация",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"kostya14@gmail.com\",\r\n    \"password\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/user/signin",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"user",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Регистрация",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"kostya14@gmail.com\",\r\n    \"password\": \"123\",\r\n    \"firstName\": \"Костя\",\r\n    \"lastName\": \"Поленков\",\r\n    \"age\": 28,\r\n    \"sex\": \"male\",\r\n    \"interests\": \"none\",\r\n    \"city\": \"Yekaterinburg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/user/signup",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получить список всех пользователей",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/user",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавить друга",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/user/makeFriend/6",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"user",
+						"makeFriend",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Список друзей текущего пользователя",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/user/firendList",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"user",
+						"firendList"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6Imtvc3R5YTE0QGdtYWlsLmNvbSIsImlkIjo3LCJpYXQiOjE2NjI5MjQwNDQsImV4cCI6MTY2Mzc4ODA0NH0.5lDSUgpC1Sc5ywqvdS6-FALeasy9ijZx4OpzXQJolc4",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "authorization",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
