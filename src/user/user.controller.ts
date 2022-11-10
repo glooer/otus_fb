@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Request, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Request, Param, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthUser } from './dto/auth-user.dto';
@@ -36,13 +36,22 @@ export class UserController {
     @Request() req: any,
     @Param('friendId') friendId: number
   ) {
-    return this.userService.createFriend(req.user.id, friendId)
+    return this.userService.createFriend(req.user.id, friendId);
   }
 
   @Get("firendList")
   @WithAuth()
   async firendList(@Request() req: any) {
     return plainToInstanceKeysMap(UserDto, await this.userService.friendList(req.user.id));
+  }
+
+  @Get("find")
+  @WithAuth()
+  async find(
+    @Query('firstName') firstName: string,
+    @Query('lastName') lastName: string
+  ) {
+    return plainToInstanceKeysMap(UserDto, await this.userService.find(firstName, lastName));
   }
 
 }

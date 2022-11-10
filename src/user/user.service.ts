@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from "@nestjs/jwt";
+
 import { AuthUser } from './dto/auth-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { UserRepo } from './repo/user.repo';
 import { checkPassword, encryptPassword } from './user.util';
-import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class UserService {
@@ -19,7 +20,7 @@ export class UserService {
         login: user.email,
         id: user.id
       }),
-    }
+    };
   }
 
   async create(createUserDto: CreateUserDto) {
@@ -63,5 +64,12 @@ export class UserService {
 
   async friendList(userId: number) {
     return await this.userRepo.friendList(userId);
+  }
+
+  async find(firstName: string, lastName: string) {
+    return await this.userRepo.find({
+      firstName,
+      lastName
+    });
   }
 }

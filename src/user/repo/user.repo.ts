@@ -1,7 +1,9 @@
-import { Injectable } from "@nestjs/common";
 import { DbService } from "src/db/db.service";
-import { User } from "../entities/user.entity";
 import { plainToInstanceKeysMap } from "src/utils";
+
+import { Injectable } from "@nestjs/common";
+
+import { User } from "../entities/user.entity";
 
 const getOneUser = (rows: any) =>
   plainToInstanceKeysMap(User, rows[0]) || null;
@@ -52,6 +54,11 @@ export class UserRepo {
 
   async friendList(userId: number) {
     const [rows] = await this.dbService.getPool().query("select t.* from t_users t join t_friends f on t.id = f.friend_id where f.user_id = ?", [userId]);
+    return plainToInstanceKeysMap(User, (rows as any[]));
+  }
+
+  async find({ firstName, lastName }) {
+    const [rows] = await this.dbService.getPool().query("select u.* from t_users u where u.last_name like concat(?, '%') and u.first_name like concat(?, '%')", [lastName, firstName]);
     return plainToInstanceKeysMap(User, (rows as any[]));
   }
 }
