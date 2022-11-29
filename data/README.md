@@ -1,4 +1,6 @@
-LOAD DATA LOCAL INFILE "C:/Users/User/Downloads/myFile0/myFile5.csv" INTO TABLE test.t_users
+SET GLOBAL local_infile=1;
+
+LOAD DATA LOCAL INFILE "C:/learn/git/otus_fb/data/users/myFile1.csv" INTO TABLE test.t_users
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES

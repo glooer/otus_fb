@@ -58,7 +58,7 @@ export class UserRepo {
   }
 
   async find({ firstName, lastName }) {
-    const [rows] = await this.dbService.getPool().query("select u.* from t_users u where u.last_name like concat(?, '%') and u.first_name like concat(?, '%')", [lastName, firstName]);
+    const [rows] = await this.dbService.getPoolSlave().query("select u.* from t_users u where u.last_name like concat(?, '%') and u.first_name like concat(?, '%')", [lastName, firstName]);
     return plainToInstanceKeysMap(User, (rows as any[]));
   }
 }
