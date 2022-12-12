@@ -1,7 +1,7 @@
 import { CreatePostDto } from 'src/user/dto/create-post.dto';
 import { Post } from 'src/user/entities/post.entity';
 
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from "@nestjs/jwt";
 
 import { AuthUser } from './dto/auth-user.dto';
@@ -9,13 +9,17 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { UserRepo } from './repo/user.repo';
 import { checkPassword, encryptPassword } from './user.util';
+import { Cache } from 'cache-manager';
+
+const getUserCacheKey = (userId: number) => `feed:${userId}`;
 
 @Injectable()
 export class UserService {
 
   constructor(
     private readonly userRepo: UserRepo,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    @Inject(CACHE_MANAGER) private readonly cacheService: Cache,
   ) { }
 
   login(user: User) {
@@ -46,8 +50,17 @@ export class UserService {
     post.content = data.content;
     await this.userRepo.createPost(post);
   }
+
   async getFeedPost(userId: number) {
-    return await this.userRepo.getFeedPost(userId);
+    const key = getUserCacheKey(userId);
+    const cachedData = await this.cacheService.get(key);
+    if (cachedData) {
+      return cachedData;
+    }
+
+    const data = await this.userRepo.getFeedPost(userId);
+    await this.cacheService.set(key, data);
+    return data;
   }
 
   async auth(data: AuthUser) {

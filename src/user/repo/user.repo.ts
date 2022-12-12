@@ -81,6 +81,7 @@ select post.id, post.user_id, post.content, post.date_create
   from t_post post
   join t_friends fr on fr.friend_id = post.user_id
  where fr.user_id = ?
+ limit 1000
     `;
     const [rows] = await this.dbService.getPool().query(sql, [userId]);
     return rows;
