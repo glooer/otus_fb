@@ -48,3 +48,5 @@ yarn start
 </details>
 
   
+Postman коллекция лежит в файлике `fb.postman_collection.json`
+После регистрации нужно авторизоваться (`/user/signin`), и в постмане поменять хедер authorization на новый
