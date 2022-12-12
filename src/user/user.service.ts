@@ -1,3 +1,6 @@
+import { CreatePostDto } from 'src/user/dto/create-post.dto';
+import { Post } from 'src/user/entities/post.entity';
+
 import { Injectable } from '@nestjs/common';
 import { JwtService } from "@nestjs/jwt";
 
@@ -9,6 +12,7 @@ import { checkPassword, encryptPassword } from './user.util';
 
 @Injectable()
 export class UserService {
+
   constructor(
     private readonly userRepo: UserRepo,
     private readonly jwtService: JwtService
@@ -34,6 +38,16 @@ export class UserService {
     user.interests = createUserDto.interests;
     user.city = createUserDto.city;
     await this.userRepo.create(user);
+  }
+
+  async createPost(userId: number, data: CreatePostDto) {
+    const post = new Post();
+    post.userId = userId;
+    post.content = data.content;
+    await this.userRepo.createPost(post);
+  }
+  async getFeedPost(userId: number) {
+    return await this.userRepo.getFeedPost(userId);
   }
 
   async auth(data: AuthUser) {

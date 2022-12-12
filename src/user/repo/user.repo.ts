@@ -1,4 +1,5 @@
 import { DbService } from "src/db/db.service";
+import { Post } from "src/user/entities/post.entity";
 import { plainToInstanceKeysMap } from "src/utils";
 
 import { Injectable } from "@nestjs/common";
@@ -10,6 +11,7 @@ const getOneUser = (rows: any) =>
 
 @Injectable()
 export class UserRepo {
+
   constructor(private readonly dbService: DbService) { }
 
   async create(user: User) {
@@ -58,7 +60,29 @@ export class UserRepo {
   }
 
   async find({ firstName, lastName }) {
-    const [rows] = await this.dbService.getPoolSlave().query("select u.* from t_users u where u.last_name like concat(?, '%') and u.first_name like concat(?, '%')", [lastName, firstName]);
+    const [rows] = await this.dbService.getPool().query("select u.* from t_users u where u.last_name like concat(?, '%') and u.first_name like concat(?, '%')", [lastName, firstName]);
     return plainToInstanceKeysMap(User, (rows as any[]));
+  }
+
+  async createPost(post: Post) {
+    const sql = "insert into t_post(user_id, content, date_create) values (?, ?, ?)";
+    const data = [
+      post.userId,
+      post.content,
+      new Date()
+    ];
+
+    await this.dbService.getPool().query(sql, data);
+  }
+
+  async getFeedPost(userId: number) {
+    const sql = `
+select post.id, post.user_id, post.content, post.date_create
+  from t_post post
+  join t_friends fr on fr.friend_id = post.user_id
+ where fr.user_id = ?
+    `;
+    const [rows] = await this.dbService.getPool().query(sql, [userId]);
+    return rows;
   }
 }
