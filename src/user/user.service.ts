@@ -10,6 +10,7 @@ import { User } from './entities/user.entity';
 import { UserRepo } from './repo/user.repo';
 import { checkPassword, encryptPassword } from './user.util';
 import { Cache } from 'cache-manager';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 const getUserCacheKey = (userId: number) => `feed:${userId}`;
 
@@ -60,7 +61,20 @@ export class UserService {
 
     const data = await this.userRepo.getFeedPost(userId);
     await this.cacheService.set(key, data);
+    await this.userRepo.setUserLastUpdateFeed(userId);
     return data;
+  }
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  async updateFeeds() {
+    const users = JSON.parse(JSON.stringify(await this.userRepo.getUsersForFeedUpdate()));
+    const updateUserData = async ({ user_id: userId }) => {
+      const data = await this.userRepo.getFeedPost(userId);
+      await this.cacheService.set(getUserCacheKey(userId), data);
+      await this.userRepo.setUserLastUpdateFeed(userId);
+    };
+
+    await users.forEach(updateUserData);
   }
 
   async auth(data: AuthUser) {

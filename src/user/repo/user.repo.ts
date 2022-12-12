@@ -86,4 +86,26 @@ select post.id, post.user_id, post.content, post.date_create
     const [rows] = await this.dbService.getPool().query(sql, [userId]);
     return rows;
   }
+
+  async getUsersForFeedUpdate() {
+    const sql = `
+select fr.user_id
+  from t_post post
+  join      t_friends fr on fr.friend_id = post.user_id
+  left join t_users_feed_update ufu on fr.user_id = ufu.user_id
+ where post.date_create > ufu.date_update
+    or ufu.date_update is null
+ group by fr.user_id
+ limit 25    
+    `;
+    const [rows] = await this.dbService.getPool().query(sql);
+    return rows;
+  }
+
+  async setUserLastUpdateFeed(userId: number) {
+    const pool = this.dbService.getPool();
+
+    await pool.query("delete from t_users_feed_update where user_id = ?", [userId]);
+    await pool.query("insert into t_users_feed_update(user_id, date_update) values (?, ?)", [userId, new Date()]);
+  }
 }
