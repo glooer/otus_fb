@@ -5,8 +5,6 @@ import { AuthUser } from './dto/auth-user.dto';
 import { UserDto } from './dto/user.dto';
 import { plainToInstanceKeysMap } from 'src/utils';
 import { WithAuth } from './jwt/jwt.auth.guard';
-import { CreatePostDto } from 'src/user/dto/create-post.dto';
-
 
 @Controller('user')
 export class UserController {
@@ -54,23 +52,4 @@ export class UserController {
   ) {
     return plainToInstanceKeysMap(UserDto, await this.userService.find(firstName, lastName));
   }
-
-  // вынести в другой модуль
-  @Post("post/create")
-  @WithAuth()
-  postCreate(
-    @Body() data: CreatePostDto,
-    @Request() req: any
-  ) {
-    return this.userService.createPost(req.user.id, data);
-  }
-
-  @Get("post/feed")
-  @WithAuth()
-  getFeed(
-    @Request() req: any
-  ) {
-    return this.userService.getFeedPost(req.user.id);
-  }
-
 }

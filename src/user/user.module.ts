@@ -3,7 +3,6 @@ import { DbModule } from 'src/db/db.module';
 
 import { Module } from '@nestjs/common';
 import { JwtModule } from "@nestjs/jwt";
-import { ScheduleModule } from '@nestjs/schedule';
 
 import { JwtStrategy } from './jwt/jwt.auth.strategy';
 import { UserRepo } from './repo/user.repo';
@@ -12,7 +11,6 @@ import { UserService } from './user.service';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
     DbModule,
     JwtModule.register({
       secret: jwtSecret,
