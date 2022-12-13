@@ -9,9 +9,10 @@ import { checkPassword, encryptPassword } from './user.util';
 
 @Injectable()
 export class UserService {
+
   constructor(
     private readonly userRepo: UserRepo,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) { }
 
   login(user: User) {

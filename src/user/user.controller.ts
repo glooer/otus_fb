@@ -6,7 +6,6 @@ import { UserDto } from './dto/user.dto';
 import { plainToInstanceKeysMap } from 'src/utils';
 import { WithAuth } from './jwt/jwt.auth.guard';
 
-
 @Controller('user')
 export class UserController {
   constructor(
@@ -53,5 +52,4 @@ export class UserController {
   ) {
     return plainToInstanceKeysMap(UserDto, await this.userService.find(firstName, lastName));
   }
-
 }

@@ -24,6 +24,30 @@
     `city` varchar(50) NOT NULL,
     PRIMARY KEY (`id`)
   ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  
+alter table t_friends
+    add constraint t_friends_t_users_id_fk
+        foreign key (user_id) references t_users (id);
+
+alter table t_friends
+    add constraint t_friends_t_users_id_fk2
+        foreign key (friend_id) references t_users (id);
+
+create table test.t_post
+(
+    id          int unsigned auto_increment,
+    user_id     int unsigned null comment 'Пользователь опубликовавший сообщение',
+    content     varchar(140) null comment 'Сообщение',
+    date_create timestamp    null comment 'Дата публикации',
+    constraint t_post_pk
+        primary key (id)
+);
+
+alter table t_post
+    add constraint t_post_t_users_id_fk
+        foreign key (user_id) references t_users (id);
+
+
   ```
   
 </details>
