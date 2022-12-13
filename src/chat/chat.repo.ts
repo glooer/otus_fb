@@ -4,10 +4,26 @@ import { plainToInstanceKeysMap } from "src/utils";
 
 import { Injectable } from "@nestjs/common";
 
+const SERVER_COUNT = 2;
+
+const getServerId = (user1: number, user2: number) => (user1 + user2) % SERVER_COUNT;
+
 @Injectable()
 export class ChatRepo {
 
   constructor(private readonly dbService: DbService) { }
+
+  getPoolByServerId(serverId: number) {
+    if (serverId === 0) {
+      return this.dbService.getPool();
+    }
+
+    if (serverId === 1) {
+      return this.dbService.getPoolDbShard();
+    }
+
+    throw new Error("Неизвестный сервер");
+  }
 
   async save(message: Message) {
     const sql = "insert into t_message(from_user_id, to_user_id, message, date_create) values (?, ?, ?, ?)";
@@ -18,7 +34,7 @@ export class ChatRepo {
       new Date(),
     ];
 
-    await this.dbService.getPool().query(sql, data);
+    await this.getPoolByServerId(getServerId(message.userFromId, message.userToId)).query(sql, data);
   }
 
   async getMessages(userId1: number, userId2: number) {
@@ -30,7 +46,7 @@ select *
  order by msg.id
     `;
 
-    const [rows] = await this.dbService.getPool().query(sql, [userId1, userId2, userId1, userId2]);
+    const [rows] = await this.getPoolByServerId(getServerId(userId1, userId2)).query(sql, [userId1, userId2, userId1, userId2]);
     return plainToInstanceKeysMap(Message, (rows as any[]));
   }
 }
