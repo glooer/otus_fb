@@ -47,6 +47,24 @@ alter table t_post
     add constraint t_post_t_users_id_fk
         foreign key (user_id) references t_users (id);
 
+create table test.t_message
+(
+    id           int unsigned auto_increment,
+    from_user_id int unsigned not null comment 'От какого пользователя сообщение',
+    to_user_id   int unsigned not null comment 'Какому пользователю',
+    message      varchar(140) not null comment 'Сообщение',
+	  date_create  timestamp    not null comment 'Дата отправки',
+    constraint t_message_pk
+        primary key (id),
+    constraint t_message_pk2
+        unique (id),
+    constraint t_message_t_users_id_fk
+        foreign key (from_user_id) references test.t_users (id),
+    constraint t_message_t_users_id_fk2
+        foreign key (to_user_id) references test.t_users (id)
+)
+    comment 'Сообщения от пользователя к пользователю';
+
 
   ```
   
