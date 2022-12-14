@@ -7,6 +7,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { PostRepo } from 'src/posts/post.repo';
 import { WsService } from 'src/ws/ws.service';
 import { UserService } from 'src/user/user.service';
+import { RabbitMQService } from 'src/rabbitMQ/rabbitMQ.service';
 
 const getUserCacheKey = (userId: number) => `feed:${userId}`;
 
@@ -17,6 +18,7 @@ export class PostService {
     private readonly postRepo: PostRepo,
     private readonly wsService: WsService,
     private readonly userService: UserService,
+    private readonly rabbitMQService: RabbitMQService,
     @Inject(CACHE_MANAGER) private readonly cacheService: Cache,
 
   ) { }
@@ -32,8 +34,9 @@ export class PostService {
 
   async sendCreatedPost(post: Post) {
     const users = (await this.userService.friendList(post.userId)).map(user => user.id);
-    this.wsService.onCreatedPost(post, users);
-
+    this.rabbitMQService.send("newPost", {
+      post, users
+    });
   }
 
   async getFeedPost(userId: number) {

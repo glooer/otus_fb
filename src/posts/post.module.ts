@@ -1,6 +1,7 @@
 import { DbModule } from 'src/db/db.module';
 import { PostRepo } from "src/posts/post.repo";
 import { PostService } from "src/posts/post.service";
+import { RabbitMQModule } from 'src/rabbitMQ/rabbitMQ.module';
 import { UserModule } from 'src/user/user.module';
 import { WsModule } from 'src/ws/ws.module';
 
@@ -15,6 +16,7 @@ import { PostController } from './post.controller';
     DbModule,
     WsModule,
     UserModule,
+    RabbitMQModule,
   ],
   controllers: [PostController],
   providers: [PostService, PostRepo]
