@@ -5,6 +5,7 @@ import { Injectable } from "@nestjs/common";
 @Injectable()
 export class DbService {
   pool: Pool;
+  dbShard: Pool;
 
   constructor() {
     this.pool = createPool({
@@ -13,9 +14,21 @@ export class DbService {
       password: '123',
       database: 'test',
     });
+
+    this.dbShard = createPool({
+      host: 'localhost',
+      user: 'root',
+      port: 3307,
+      password: '123',
+      database: 'test',
+    });
   }
 
   getPool() {
     return this.pool;
+  }
+
+  getPoolDbShard() {
+    return this.dbShard;
   }
 }
