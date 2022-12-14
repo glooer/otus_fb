@@ -24,6 +24,14 @@ export class UserService {
     };
   }
 
+  getUserIdByJwt(token: string) {
+    try {
+      return (this.jwtService.decode(token) as any)?.id;
+    } catch (e) {
+      return null;
+    }
+  }
+
   async create(createUserDto: CreateUserDto) {
     const user = new User();
     user.email = createUserDto.email;

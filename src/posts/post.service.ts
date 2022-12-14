@@ -5,6 +5,8 @@ import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PostRepo } from 'src/posts/post.repo';
+import { WsService } from 'src/ws/ws.service';
+import { UserService } from 'src/user/user.service';
 
 const getUserCacheKey = (userId: number) => `feed:${userId}`;
 
@@ -13,14 +15,25 @@ export class PostService {
 
   constructor(
     private readonly postRepo: PostRepo,
+    private readonly wsService: WsService,
+    private readonly userService: UserService,
     @Inject(CACHE_MANAGER) private readonly cacheService: Cache,
+
   ) { }
 
   async createPost(userId: number, data: CreatePostDto) {
     const post = new Post();
     post.userId = userId;
     post.content = data.content;
-    await this.postRepo.createPost(post);
+    post.dateCreate = new Date();
+    const result = await this.postRepo.createPost(post);
+    await this.sendCreatedPost(result);
+  }
+
+  async sendCreatedPost(post: Post) {
+    const users = (await this.userService.friendList(post.userId)).map(user => user.id);
+    this.wsService.onCreatedPost(post, users);
+
   }
 
   async getFeedPost(userId: number) {

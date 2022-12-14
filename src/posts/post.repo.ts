@@ -13,10 +13,13 @@ export class PostRepo {
     const data = [
       post.userId,
       post.content,
-      new Date()
+      post.dateCreate
     ];
 
-    await this.dbService.getPool().query(sql, data);
+    const result = await this.dbService.getPool().query(sql, data);
+    const insertId = (result[0] as any).insertId;
+    post.id = insertId;
+    return post;
   }
 
   async getFeedPost(userId: number) {

@@ -1,6 +1,7 @@
 import * as redisStore from 'cache-manager-redis-store';
 import { ChatModule } from 'src/chat/chat.module';
 import { PostModule } from 'src/posts/post.module';
+import { WsModule } from 'src/ws/ws.module';
 
 import { CacheModule, Module } from '@nestjs/common';
 
@@ -18,6 +19,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     PostModule,
     ChatModule,
+    WsModule,
   ],
 })
 export class AppModule { }
